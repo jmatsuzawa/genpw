@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+gen_random() {
+  local min_digit=${1}
+
+  if type openssl >& /dev/null; then
+    openssl rand -base64 "${min_digit}"
+  elif type base64 >& /dev/null && [[ -r /dev/urandom ]]; then
+    dd if=/dev/urandom bs="${min_digit}" count=1 2>/dev/null | base64
+  fi
+}
+
+ndigit=${1:-32}
+random=$(gen_random "${ndigit}")
+echo ${random:0:ndigit}
